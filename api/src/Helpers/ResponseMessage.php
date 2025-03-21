@@ -1,7 +1,7 @@
 <?php 
 	namespace App\Helpers;
 
-	class Response {
+	class ResponseMessage {
 		/**
 		 * Send a response with status and message
 		 */

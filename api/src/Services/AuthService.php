@@ -5,9 +5,11 @@ namespace App\Services;
 use App\Models\User;
 use App\Helpers\Session;
 use App\Helpers\Response;
+use App\Services\UserService;
 
 class AuthService {
     protected static $userHash = 'PHP_EDUCATION_API_HASH';
+    protected static $hashPassword = '$2y$10$8vUuGnVtD4O9GRls9thnS.7r2gM0z6M8zDs2IvIx9Xt0jhz4pDS4S';
 
     public function authenticate(array $data): bool
     {
@@ -15,11 +17,12 @@ class AuthService {
             if (session_status() === PHP_SESSION_NONE) {
                 Session::start();
             }
-    
-            $user = User::where('email', $data['email'])->first();
-    
-            if ($user && password_verify($data['password'], $user->password)) {
-                Session::setVar(self::$userHash, $user->email);
+            
+            $user = new UserService();
+            $user = $user->findUserByEmail($data['email']);
+
+            if ($user && password_verify($data['password'], $user->getPassword())) {
+                Session::setVar(self::$userHash, $user->getEmail());
                 return true;
             }
         } 
@@ -27,6 +30,11 @@ class AuthService {
             error_log('Error: ' . $e->getMessage());
         }
         return false;
+    }
+
+    public function generatePasswordHash($password): string
+    {
+        return password_hash($password, $this->hashPassword);
     }
 
     public function findAuthById(int $id): ?Auth

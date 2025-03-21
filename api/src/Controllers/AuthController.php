@@ -2,8 +2,12 @@
 
 namespace App\Controllers;
 
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+
 use App\Services\AuthService;
-use App\Helpers\Response;
+use App\Helpers\ResponseMessage;
+use App\Helpers\RequestBody;
 
 class AuthController
 {
@@ -14,15 +18,16 @@ class AuthController
         $this->authService = new AuthService();
     }
 
-    public function login($request)
+    public function login(Request $request, Response $response)
     {
-        // Logic to create a auth
-        $data = $request->getParsedBody();
+        // Captura o corpo da requisição como uma string
+        $data = RequestBody::getBody($request);
+
         if ($this->authService->authenticate($data)) {
-            Response::send(200, 'User successfully authenticated');
+            ResponseMessage::send(200, 'User successfully authenticated');
         } 
         else {
-            Response::send(401, 'Invalid credentials');
+            ResponseMessage::send(401, 'Invalid credentials');
         }
     }
 

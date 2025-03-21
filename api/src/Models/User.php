@@ -9,6 +9,8 @@ class User {
     private $id;
     private $name;
     private $email;
+
+    private $password;
     private $db;
     private $pdo;
 
@@ -32,6 +34,10 @@ class User {
 
     public function getEmail() {
         return $this->email;
+    }
+
+    public function getPassword() {
+        return $this->password;
     }
 
     public function setName($name) {
@@ -69,9 +75,29 @@ class User {
             $stmt->bindParam(':id', $id);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $user ? $user : null;
+            return $user ?: null;
         } catch (PDOException $e) {
             return "Error: " . $e->getMessage();
         }
     }
+    public function findByEmail($email) {
+        try {
+            $sql = "SELECT * FROM users WHERE email = :email";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $user ? $this->populate($user): null;
+        } catch (PDOException $e) {
+            return "Error: " . $e->getMessage();
+        }
+    }
+
+    public function populate(array $data)
+        {
+            $this->id = $data['id'] ?? null;
+            $this->name = $data['name'] ?? null;
+            $this->email = $data['email'] ?? null;
+            $this->password = $data['password'] ?? null;
+        }
 }

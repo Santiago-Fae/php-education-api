@@ -10,18 +10,19 @@ class UserService
     {
         // Logic to register a new user
         $user = new User();
-        $user->name = $data['name'];
-        $user->email = $data['email'];
+        $user->setName($data['name']);
+        $user->setEmail($data['email']);
+        $user->setEmail($data['password']);
         // Save user to the database (pseudo code)
         // $user->save();
         return $user;
     }
 
-    public function findUserById(int $id): ?User
+    public function findUserByEmail(string $email): ?User
     {
-        // Logic to find a user by ID
-        // return User::find($id); // Pseudo code for fetching user
-        return null; // Placeholder return
+        $user = new User();
+        $user->findByEmail($email);
+        return $user;
     }
 
     public function deleteUser(int $id): bool

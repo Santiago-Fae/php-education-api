@@ -2,7 +2,7 @@
     "name": "santi/api",
     "autoload": {
         "psr-4": {
-            "Santi\\Api\\": "src/"
+           "App\\": "src/"
         }
     },
     "authors": [
