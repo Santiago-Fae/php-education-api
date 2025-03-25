@@ -3,18 +3,22 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Services\AuthService;
 
 class UserService
 {
     public function registerUser(array $data): User
     {
+        $authService = new AuthService();
+        $data['password'] = $authService->generatePasswordHash($data['password']);
+
         // Logic to register a new user
         $user = new User();
         $user->setName($data['name']);
         $user->setEmail($data['email']);
-        $user->setEmail($data['password']);
-        // Save user to the database (pseudo code)
-        // $user->save();
+        $user->setPassword($data['password']);
+        $user->save();
+
         return $user;
     }
 

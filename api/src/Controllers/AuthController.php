@@ -31,14 +31,24 @@ class AuthController
         }
     }
 
-    public function authenticate($id)
+    public function isLogged()
     {
-        
+        if ($this->authService->isLogged()) {
+            return true;
+        } 
+        else {
+            ResponseMessage::send(403, 'User is not logged');
+        }
     }
 
-    public function logout($id)
+    public function logout()
     {
         // Logic to delete a auth
-        return $this->authService->deleteAuth($id);
+        if ($this->authService->logout()) {
+            ResponseMessage::send(200, 'User successfully logged out');
+        } 
+        else {
+            ResponseMessage::send(401, 'Error logging out');
+        }
     }
 }

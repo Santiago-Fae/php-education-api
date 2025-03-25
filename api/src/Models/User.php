@@ -48,23 +48,30 @@ class User {
         $this->email = $email;
     }
 
+    public function setPassword($password) {
+        $this->password = $password;
+    }
+
     public function save() {
         if ($this->id) {
             // Update existing user
-            $stmt = $this->pdo->prepare("UPDATE users SET name = :name, email = :email WHERE id = :id");
+            $stmt = $this->pdo->prepare("UPDATE users SET name = :name, email = :email, password = :password WHERE id = :id");
             $stmt->execute([
                 ':name' => $this->name,
                 ':email' => $this->email,
+                ':password' => $this->password,
                 ':id' => $this->id
             ]);
-        } else {
+        } 
+        else {
             // Insert new user
-            $stmt = $this->pdo->prepare("INSERT INTO users (name, email) VALUES (:name, :email)");
+            $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
             $stmt->execute([
                 ':name' => $this->name,
-                ':email' => $this->email
+                ':email' => $this->email,
+                ':password' => $this->password
             ]);
-            $this->id = $this->pdo->lastInsertId();
+            $this->id = $this->pdo->lastInsertId('id');
         }
     }
 

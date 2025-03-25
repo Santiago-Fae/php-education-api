@@ -37,20 +37,31 @@ class AuthService {
         return password_hash($password, $this->hashPassword);
     }
 
-    public function findAuthById(int $id): ?Auth
+    public function isLogged(): bool
     {
-        // Logic to find a auth by ID
-        // return Auth::find($id); // Pseudo code for fetching auth
-        return null; // Placeholder return
+        if (session_status() === PHP_SESSION_NONE) {
+            Session::start();
+        }
+        return isset($_SESSION[self::$userHash]) && !empty($_SESSION[self::$userHash]);
     }
 
-    public function deleteAuth(int $id): bool
+    public function logout(): bool
     {
-        // Logic to delete a auth by ID
-        // $auth = Auth::find($id);
-        // if ($auth) {
-        //     return $auth->delete(); // Pseudo code for deleting auth
-        // }
-        return false; // Placeholder return
+        try {
+            if (session_status() === PHP_SESSION_NONE) {
+                Session::start();
+            }
+
+            if (isset($_SESSION[self::$userHash])) {
+                unset($_SESSION[self::$userHash]);
+                Session::close();
+            }
+            return true;
+        } 
+        catch (\Exception $e) {
+            error_log('Error during logout: ' . $e->getMessage());
+        }
+
+        return false;
     }
 }
