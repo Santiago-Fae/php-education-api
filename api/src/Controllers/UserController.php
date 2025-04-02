@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Services\UserService;
 use App\Controllers\AuthController;
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
 use App\Helpers\RequestBody;
 use App\Helpers\ResponseMessage;
 

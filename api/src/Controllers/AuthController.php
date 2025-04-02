@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+use App\Models\Log;
 use App\Services\AuthService;
 use App\Helpers\ResponseMessage;
 use App\Helpers\RequestBody;
@@ -12,10 +13,12 @@ use App\Helpers\RequestBody;
 class AuthController
 {
     protected $authService;
+    protected $log;
 
     public function __construct()
     {
         $this->authService = new AuthService();
+        $this->log = new Log();
     }
 
     public function login(Request $request, Response $response)
@@ -27,6 +30,8 @@ class AuthController
             ResponseMessage::send(200, 'User successfully authenticated');
         } 
         else {
+            // Log the failed login attempt
+            $this->log->saveLog($request, 'Failed login attempt', 1);
             ResponseMessage::send(401, 'Invalid credentials');
         }
     }
@@ -37,6 +42,7 @@ class AuthController
             return true;
         } 
         else {
+            $this->log->saveLog(null, 'User is not logged', 1);
             ResponseMessage::send(403, 'User is not logged');
         }
     }
