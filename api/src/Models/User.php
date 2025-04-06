@@ -5,7 +5,8 @@ use App\Models\DB;
 use PDO;
 use PDOException;
 
-class User {
+class User
+{
     private $id;
     private $name;
     private $email;
@@ -14,7 +15,8 @@ class User {
     private $db;
     private $pdo;
 
-    public function __construct($id = null, $name = null, $email = null) {
+    public function __construct($id = null, $name = null, $email = null)
+    {
         $this->id = $id;
         $this->name = $name;
         $this->email = $email;
@@ -22,64 +24,78 @@ class User {
         // Initialize PDO connection
         $this->db = new DB();
         $this->pdo = $this->db->getConnection();
-  }
+    }
 
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function getEmail() {
+    public function getEmail()
+    {
         return $this->email;
     }
 
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
-
-    public function setName($name) {
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
-    public function setEmail($email) {
+    public function setEmail($email)
+    {
         $this->email = $email;
     }
 
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password = $password;
     }
 
-    public function save() {
+    public function save()
+    {
         if ($this->id) {
             // Update existing user
-            $stmt = $this->pdo->prepare("UPDATE users SET name = :name, email = :email, password = :password WHERE id = :id");
+            $stmt = $this->pdo->prepare(
+                "UPDATE users SET name = :name, email = :email WHERE id = :id"
+            );
             $stmt->execute([
-                ':name' => $this->name,
-                ':email' => $this->email,
-                ':password' => $this->password,
-                ':id' => $this->id
+                ":name" => $this->name,
+                ":email" => $this->email,
+                ":id" => $this->id,
             ]);
-        } 
-        else {
+        } else {
             // Insert new user
-            $stmt = $this->pdo->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
+            $stmt = $this->pdo->prepare(
+                "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)"
+            );
             $stmt->execute([
-                ':name' => $this->name,
-                ':email' => $this->email,
-                ':password' => $this->password
+                ":name" => $this->name,
+                ":email" => $this->email,
+                ":password" => $this->password,
             ]);
-            $this->id = $this->pdo->lastInsertId('id');
+            $this->id = $this->pdo->lastInsertId("id");
         }
     }
 
-    public function find($id) {
+    public function find($id)
+    {
         try {
             $sql = "SELECT * FROM users WHERE id = :id";
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':id', $id);
+            $stmt->bindParam(":id", intval($id));
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             return $user ?: null;
@@ -87,24 +103,25 @@ class User {
             return "Error: " . $e->getMessage();
         }
     }
-    public function findByEmail($email) {
+    public function findByEmail($email)
+    {
         try {
             $sql = "SELECT * FROM users WHERE email = :email";
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(":email", $email);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $user ? $this->populate($user): null;
+            return $user ? $this->populate($user) : null;
         } catch (PDOException $e) {
             return "Error: " . $e->getMessage();
         }
     }
 
     public function populate(array $data)
-        {
-            $this->id = $data['id'] ?? null;
-            $this->name = $data['name'] ?? null;
-            $this->email = $data['email'] ?? null;
-            $this->password = $data['password'] ?? null;
-        }
+    {
+        $this->id = $data["id"] ?? null;
+        $this->name = $data["name"] ?? null;
+        $this->email = $data["email"] ?? null;
+        $this->password = $data["password"] ?? null;
+    }
 }
