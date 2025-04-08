@@ -125,4 +125,17 @@ class Classes
         $this->hour = $data["hour"] ?? null;
         $this->classroom = $data["Classroom"] ?? null;
     }
+
+    public function delete(): bool
+{
+    try {
+        $stmt = $this->pdo->prepare("DELETE FROM classes WHERE id = :id");
+        $stmt->bindParam(":id", $this->id);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
 }

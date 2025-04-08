@@ -30,6 +30,7 @@ $app->patch("/users", [new UserController(), "updateUser"]);
 $app->post("/classes", [new ClassController(), "createClass"]);
 $app->get("/classes", [new ClassController(), "getClass"]);
 $app->patch("/classes", [new ClassController(), "updateClass"]);
+$app->delete("/classes", [new ClassController(), "deleteClass"]);
 
 /* $app->get('/users/{id}', [UserController::class, 'getUser']);
 $app->put('/users/{id}', [UserController::class, 'updateUser']);

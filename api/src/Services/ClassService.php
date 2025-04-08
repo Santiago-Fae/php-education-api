@@ -14,11 +14,24 @@ class ClassService
         $this->class = new Classes();
     }
 
-    public function createClass(
-        string $name,
-        string $hour,
-        string $classroom
-    ): ?int {
+    // public function createClass(
+    //     string $name,
+    //     string $hour,
+    //     string $classroom
+    // ): ?int {
+    //     $this->class->setName($name);
+    //     $this->class->setHour($hour);
+    //     $this->class->setClassroom($classroom);
+
+    //     try {
+    //         $this->class->save();
+    //         return $this->class->getId();
+    //     } catch (PDOException $e) {
+    //         return null;
+    //     }
+    // }
+public function create(string $name, string $hour, string $classroom): ?int
+    {
         $this->class->setName($name);
         $this->class->setHour($hour);
         $this->class->setClassroom($classroom);
@@ -31,7 +44,9 @@ class ClassService
         }
     }
 
-    public function getById(int $id): array|null
+
+
+    public function findClassById(int $id): array|null
     {
         try {
             $result = $this->class->find($id);
@@ -57,12 +72,26 @@ class ClassService
         }
     }
 
-    public function updateClass(
-        int $id,
-        string $name,
-        string $hour,
-        string $classroom
-    ): bool {
+    // public function updateClass(
+    //     int $id,
+    //     string $name,
+    //     string $hour,
+    //     string $classroom
+    // ): bool {
+    //     $this->class->setId($id);
+    //     $this->class->setName($name);
+    //     $this->class->setHour($hour);
+    //     $this->class->setClassroom($classroom);
+
+    //     try {
+    //         $this->class->save();
+    //         return true;
+    //     } catch (PDOException $e) {
+    //         return false;
+    //     }
+    // }
+    public function update(int $id, string $name, string $hour, string $classroom): bool
+    {
         $this->class->setId($id);
         $this->class->setName($name);
         $this->class->setHour($hour);
@@ -76,6 +105,7 @@ class ClassService
         }
     }
 
+
     public function deleteClass(int $id): bool
     {
         $result = $this->class->find($id);
@@ -84,9 +114,7 @@ class ClassService
             $this->class->populate($result);
 
             try {
-                $stmt = $this->pdo->prepare(
-                    "DELETE FROM classes WHERE id = :id"
-                );
+                $stmt = $this->pdo->prepare("DELETE FROM classes WHERE id = :id");
                 $stmt->bindParam(":id", $id);
                 $stmt->execute();
                 return $stmt->rowCount() > 0;
@@ -97,6 +125,18 @@ class ClassService
 
         return false;
     }
+//     public function deleteClass(int $id): bool
+// {
+//     $result = $this->class->find($id);
+
+//     if ($result) {
+//         $this->class->populate($result);
+//         return $this->class->delete(); // model with handle deletion
+//     }
+
+//     return false;
+// }
+
 }
 
 ?>
