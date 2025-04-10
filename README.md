@@ -48,7 +48,7 @@ php-education-api/
 ## Installation
 1. Clone the repository:
   ```bash
-  git clone https://github.com/your-username/php-education-api.git
+  git clone https://github.com/Santiago-Fae/php-education-api
   cd php-education-api
   ```
 
