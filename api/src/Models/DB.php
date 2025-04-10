@@ -4,10 +4,12 @@ use PDO;
 use PDOException;
 
 class DB {
-    private $host = 'localhost'; // Database server address
-    private $dbName = 'education_system'; // Database name
-    private $username = 'root'; // Database username
-    private $password = ''; // Database password
+    private $host = '127.0.0.1'; // Endereço do servidor MySQL
+private $dbName = 'education_system'; // Nome do banco de dados
+private $username = 'root'; // Usuário padrão do MySQL no AMPPS
+private $password = ''; // Senha padrão do MySQL no AMPPS
+
+    
     private $pdo; // PDO instance
 
     public function __construct() {
