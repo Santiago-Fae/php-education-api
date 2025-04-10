@@ -11,20 +11,31 @@ use App\Services\AuthService;
 class UserService
 {
     private PDO $pdo;
-    public function registerUser(array $data): User
+    public function registerUser(array $data)
     {
         $authService = new AuthService();
         $data["password"] = $authService->generatePasswordHash(
             $data["password"]
         );
 
-        // Logic to register a new user
+        // using new instance to register user
         $user = new User();
         $user->setName($data["name"]);
         $user->setEmail($data["email"]);
         $user->setPassword($data["password"]);
-        $user->save();
-
+        $user->setPermission($data["permission"]);
+        try {
+            $user->save();
+        } catch (PDOException $e) {
+            return false;
+        }
+        $id = $user->getId();
+        if($data["classes"]){
+            foreach($data["classes"] as $idClass){
+                $relation = new Relations(null,$id,$idClass);
+                $relation->save();
+            }
+        }
         return $user;
     }
 
@@ -47,29 +58,35 @@ class UserService
         return $user;
     }
 
-    public function updateUser(array $data): User
-    {
+    public function updateUser(array $data)
+     {
         $authService = new AuthService();
-        // Logic to register a new user
+        // new logic to register user
         $user = new User();
         $user->setId($data["id"]);
         $user->setName($data["name"]);
         $user->setEmail($data["email"]);
-        $user->save();
-
-        return $user;
-    }
-
-    public function deleteUser(int $id): bool
-    {
+        $user->setPermission($data["permission"]);
         try {
-            $sql = "DELETE FROM users WHERE id = :id";
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(":id", $id);
-            $stmt->execute();
-            return $stmt->rowCount() > 0;
+            $user->save();
         } catch (PDOException $e) {
             return false;
         }
+        $id = $user->getId();
+        if($data["classes"]){
+            $excludeRelations = new Relations();
+            $excludeRelations->deleteRelationsByUserId($id);
+            foreach($data["classes"] as $idClass){
+                $relation = new Relations(null,$id,$idClass);
+                $relation->save();
+            }
+        }
+        return $user;
+    }
+
+    public function deleteUser( $id)
+    {
+    $user = new User();
+    return $user->deleteUser($id);
     }
 }

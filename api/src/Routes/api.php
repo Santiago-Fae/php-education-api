@@ -9,7 +9,7 @@ use App\Controllers\ClassController;
 require dirname(__DIR__) . "../../vendor/autoload.php";
 $app = AppFactory::create();
 
-// Add LogMiddleware to the application
+// adding logmiddleware to application
 $logMiddleware = new LogMiddleware();
 $app->add(function ($request, $handler) use ($logMiddleware) {
     return $logMiddleware->handle($request, $handler);
@@ -26,6 +26,7 @@ $app->post("/login", [new AuthController(), "login"]);
 $app->post("/logout", [new AuthController(), "logout"]);
 $app->post("/users", [new UserController(), "createUser"]);
 $app->get("/users", [new UserController(), "getUser"]);
+$app->delete("/users", [new UserController(), "deleteUser"]);
 $app->patch("/users", [new UserController(), "updateUser"]);
 $app->post("/classes", [new ClassController(), "createClass"]);
 $app->get("/classes", [new ClassController(), "getClass"]);

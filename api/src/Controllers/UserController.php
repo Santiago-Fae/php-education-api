@@ -2,12 +2,15 @@
 
 namespace App\Controllers;
 
+use PDO;
+use PDOException;
 use App\Services\UserService;
 use App\Controllers\AuthController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Helpers\RequestBody;
 use App\Helpers\ResponseMessage;
 use App\Helpers\ResponseHelper;
+
 
 class UserController
 {
@@ -22,8 +25,9 @@ class UserController
     {
         $authController = new AuthController();
         $authController->isLogged();
-
-        // Captura o corpo da requisição como uma string
+        if ($authController->getUser() !== 'admin') {
+            ResponseMessage::send(403, "Permission denied");
+        }
         $data = RequestBody::getBody($request);
         if ($this->userService->registerUser($data)) {
             ResponseMessage::send(200, "Created user successfully");
@@ -44,7 +48,9 @@ class UserController
     {
         $authController = new AuthController();
         $authController->isLogged();
-
+        if ($authController->getUser() !== 'admin') {
+            ResponseMessage::send(403, "Permission denied");
+        }
         // Captura o corpo da requisição como uma string
         $data = RequestBody::getBody($request);
         if ($this->userService->updateUser($data)) {
@@ -54,9 +60,18 @@ class UserController
         }
     }
 
-    public function deleteUser($id)
+    public function deleteUser(Request $request)
     {
-        // Logic to delete a user
-        // return $this->userService->deleteUser($id);
+        $authController = new AuthController();
+        $authController->isLogged();
+        if ($authController->getUser() !== 'admin') {
+            ResponseMessage::send(403, "Permission denied");
+        }
+        $data = RequestBody::getBody($request);
+     if ($this->userService->deleteUser($data["id"])) {
+            ResponseMessage::send(200, "User deleted successfully");
+        } else {
+            ResponseMessage::send(401, "User was not found");
+        }
     }
 }

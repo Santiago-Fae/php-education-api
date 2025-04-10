@@ -30,7 +30,6 @@ class ClassController
         $name = $data['name'] ?? '';
         $hour = $data['hour'] ?? '';
         $classroom = $data['classroom'] ?? '';
-
         if ($this->classService->create($name, $hour, $classroom)) {
             ResponseMessage::send(200, "Created class successfully");
         } else {

@@ -25,7 +25,7 @@ class Relations
         $this->pdo = $this->db->getConnection();
     }
 
-    // Save a user-class relationship
+    // save the user class relation
     public function save()
     {
         if ($this->id) {
@@ -49,7 +49,7 @@ class Relations
         }
     }
 
-    // Find all classes for a user
+    // find all the classes for a specific user
     public function getClassesForUser($userId): array
     {
         $stmt = $this->pdo->prepare("
@@ -61,7 +61,7 @@ class Relations
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Find all users for a class
+    // function to get users = class in table
     public function getUsersForClass($classId): array
     {
         $stmt = $this->pdo->prepare("
@@ -73,11 +73,30 @@ class Relations
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Optional: delete a relationship
+    // function to delete relation
     public function delete()
     {
         $stmt = $this->pdo->prepare("DELETE FROM classuserlink WHERE id = :id");
         $stmt->bindParam(":id", $this->id);
         return $stmt->execute();
     }
+
+    public function deleteRelationsByUserId($userId): void
+{
+    $stmt = $this->pdo->prepare("
+        DELETE FROM classuserlink
+        WHERE user_id = :user_id
+    ");
+    $stmt->execute([':user_id' => $userId]);
+}
+
+public function deleteRelationsByClassId($classId): void
+{
+    $stmt = $this->pdo->prepare("
+        DELETE FROM classuserlink
+        WHERE class_id = :class_id
+    ");
+    $stmt->execute([':class_id' => $classId]);
+}
+
 }

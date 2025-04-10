@@ -23,6 +23,7 @@ class AuthService {
 
             if ($user && password_verify($data['password'], $user->getPassword())) {
                 Session::setVar(self::$userHash, $user->getEmail());
+                Session::setVar('permission', $user->getPermission());
                 return true;
             }
         } 
@@ -63,5 +64,12 @@ class AuthService {
         }
 
         return false;
+    }
+    public function getUser()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            Session::start();
+        }
+        return $_SESSION[self::$userHash] ? Session::getVar('permission') : null;
     }
 }

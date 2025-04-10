@@ -10,18 +10,18 @@ class User
     private $id;
     private $name;
     private $email;
-
+    private $permission;
     private $password;
     private $db;
     private $pdo;
 
-    public function __construct($id = null, $name = null, $email = null)
+    public function __construct($id = null, $name = null, $email = null,$permission = null)
     {
         $this->id = $id;
         $this->name = $name;
         $this->email = $email;
-
-        // Initialize PDO connection
+        $this->permission = $permission;
+        // start the pdo connection
         $this->db = new DB();
         $this->pdo = $this->db->getConnection();
     }
@@ -29,6 +29,10 @@ class User
     public function getId()
     {
         return $this->id;
+    }
+    public function getPermission() 
+    {
+        return $this->permission;
     }
 
     public function getName()
@@ -63,28 +67,33 @@ class User
     {
         $this->password = $password;
     }
-
+      public function setPermission($permission)
+    {
+        $this->permission = $permission;
+    }
     public function save()
     {
         if ($this->id) {
-            // Update existing user
+            //if it has id update existing user
             $stmt = $this->pdo->prepare(
-                "UPDATE users SET name = :name, email = :email WHERE id = :id"
+                "UPDATE users SET name = :name, email = :email, permission = :permission WHERE id = :id"
             );
             $stmt->execute([
                 ":name" => $this->name,
                 ":email" => $this->email,
-                ":id" => $this->id,
+                ":permission" => $this->permission,
+                ":id" => $this->id
             ]);
         } else {
-            // Insert new user
+            // if no id will insert a new user
             $stmt = $this->pdo->prepare(
-                "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)"
+                "INSERT INTO users (name, email, password, permission) VALUES (:name, :email, :password, :permission)"
             );
             $stmt->execute([
                 ":name" => $this->name,
                 ":email" => $this->email,
                 ":password" => $this->password,
+                ":permission" => $this->permission
             ]);
             $this->id = $this->pdo->lastInsertId("id");
         }
@@ -123,5 +132,20 @@ class User
         $this->name = $data["name"] ?? null;
         $this->email = $data["email"] ?? null;
         $this->password = $data["password"] ?? null;
+        $this->permission = $data["permission"] ?? null;
+    }
+
+     public function deleteUser( $id)
+    {
+        print_r($id);
+        try {
+            $sql = "DELETE FROM users WHERE id = :id";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":id", intval($id));
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 }

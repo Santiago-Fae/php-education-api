@@ -57,4 +57,14 @@ class AuthController
             ResponseMessage::send(401, 'Error logging out');
         }
     }
+    public function getUser()
+    {
+        if ($this->authService->isLogged()) {
+            return $this->authService->getUser();
+        } 
+        else {
+            $this->log->saveLog(null, 'User is not logged', 1);
+            ResponseMessage::send(403, 'User is not logged');
+        }
+    }
 }
