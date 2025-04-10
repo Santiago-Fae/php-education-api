@@ -2,11 +2,15 @@
 
 namespace App\Controllers;
 
+use PDO;
+use PDOException;
 use App\Services\UserService;
 use App\Controllers\AuthController;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Helpers\RequestBody;
 use App\Helpers\ResponseMessage;
+use App\Helpers\ResponseHelper;
+
 
 class UserController
 {
@@ -21,34 +25,53 @@ class UserController
     {
         $authController = new AuthController();
         $authController->isLogged();
-
-        // Captura o corpo da requisição como uma string
+        if ($authController->getUser() !== 'admin') {
+            ResponseMessage::send(403, "Permission denied");
+        }
         $data = RequestBody::getBody($request);
         if ($this->userService->registerUser($data)) {
-            ResponseMessage::send(200, 'Created user successfully');
+            ResponseMessage::send(200, "Created user successfully");
+        } else {
+            ResponseMessage::send(401, "Error creating user");
         }
-        else {
-            ResponseMessage::send(401, 'Error creating user');
-        }
-
     }
 
-    public function getUser($id)
+    public function getUser(Request $request)
     {
         // Logic to get a user by ID
-        // return $this->userService->findUserById($id);
+        $data = RequestBody::getBody($request);
+        $user = $this->userService->findUserById($data["id"]);
+        ResponseHelper::success($user);
     }
 
-    public function updateUser($id, $request)
+    public function updateUser($request)
     {
-        // Logic to update a user
-        // $data = $request->getParsedBody();
-        // return $this->userService->updateUser($id, $data);
+        $authController = new AuthController();
+        $authController->isLogged();
+        if ($authController->getUser() !== 'admin') {
+            ResponseMessage::send(403, "Permission denied");
+        }
+        // Captura o corpo da requisição como uma string
+        $data = RequestBody::getBody($request);
+        if ($this->userService->updateUser($data)) {
+            ResponseMessage::send(200, "Updated user successfully");
+        } else {
+            ResponseMessage::send(401, "Error creating user");
+        }
     }
 
-    public function deleteUser($id)
+    public function deleteUser(Request $request)
     {
-        // Logic to delete a user
-        // return $this->userService->deleteUser($id);
+        $authController = new AuthController();
+        $authController->isLogged();
+        if ($authController->getUser() !== 'admin') {
+            ResponseMessage::send(403, "Permission denied");
+        }
+        $data = RequestBody::getBody($request);
+     if ($this->userService->deleteUser($data["id"])) {
+            ResponseMessage::send(200, "User deleted successfully");
+        } else {
+            ResponseMessage::send(401, "User was not found");
+        }
     }
 }
