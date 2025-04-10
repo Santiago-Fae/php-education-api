@@ -26,34 +26,26 @@ class Classes
         $this->name = $name;
         $this->hour = $hour;
         $this->classroom = $classroom;
-
-        // Initialize DB connection
         $this->db = new DB();
         $this->pdo = $this->db->getConnection();
     }
-
-    // get data methods
     public function getId(): ?int
     {
         return $this->id;
     }
-
     public function getName(): ?string
     {
         return $this->name;
     }
-
     public function getHour(): ?string
     {
         return $this->hour;
     }
-
     public function getClassroom(): ?string
     {
         return $this->classroom;
     }
-
-    // set the data methods
+  
     public function setId($id)
     {
         $this->id = $id;
@@ -101,8 +93,6 @@ class Classes
             $this->id = $this->pdo->lastInsertId("id");
         }
     }
-
-    // finding by id
     public function find($id)
     {
         try {
@@ -116,8 +106,6 @@ class Classes
             return "Error: " . $e->getMessage();
         }
     }
-
-    // populate the class db row
     public function populate(array $data)
     {
         $this->id = $data["id"] ?? null;

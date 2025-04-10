@@ -23,14 +23,12 @@ class AuthController
 
     public function login(Request $request, Response $response)
     {
-        // Captura o corpo da requisição como uma string
         $data = RequestBody::getBody($request);
 
         if ($this->authService->authenticate($data)) {
             ResponseMessage::send(200, 'User successfully authenticated');
         } 
         else {
-            // Log the failed login attempt
             $this->log->saveLog($request, 'Failed login attempt', 1);
             ResponseMessage::send(401, 'Invalid credentials');
         }
@@ -49,7 +47,6 @@ class AuthController
 
     public function logout()
     {
-        // Logic to delete a auth
         if ($this->authService->logout()) {
             ResponseMessage::send(200, 'User successfully logged out');
         } 

@@ -3,7 +3,7 @@
 
 	class RequestBody {
 		/**
-		 * Get the body of the request
+		 * to get body of req
 		 */
 		public static function getBody($request) {
             $body = (string) $request->getBody();

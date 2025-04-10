@@ -64,9 +64,10 @@ class Relations
     // function to get users = class in table
     public function getUsersForClass($classId): array
     {
+        // setting the ids for the relation
         $stmt = $this->pdo->prepare("
             SELECT u.* FROM users u
-            JOIN classuserlink cu ON u.id = cu.user_id
+            JOIN classuserlink cu ON u.id = cu.user_id 
             WHERE cu.class_id = :class_id
         ");
         $stmt->execute([':class_id' => $classId]);

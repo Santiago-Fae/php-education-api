@@ -29,8 +29,6 @@ class ClassUserLink
         $this->db = new DB();
         $this->pdo = $this->db->getConnection();
     }
-
-    // Getters
     public function getId(): ?int
     {
         return $this->id;
@@ -47,8 +45,6 @@ class ClassUserLink
     {
         return $this->createdAt;
     }
-
-    // Setters
     public function setId($id)
     {
         $this->id = $id;
@@ -62,7 +58,7 @@ class ClassUserLink
         $this->classId = $classId;
     }
 
-    // Save (Insert)
+ // saving the data 
     public function save(): ?int
     {
         try {
@@ -81,8 +77,6 @@ class ClassUserLink
             return null;
         }
     }
-
-    // Find by ID
     public function find($id)
     {
         try {
@@ -97,8 +91,7 @@ class ClassUserLink
             return null;
         }
     }
-
-    // Populate this object from a DB row
+    // creating the object on a row
     public function populate(array $data)
     {
         $this->id = $data["id"] ?? null;
