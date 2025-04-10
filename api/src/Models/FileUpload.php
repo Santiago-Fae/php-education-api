@@ -1,38 +1,55 @@
 <?php
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    exit('POST request method required');
+}
 
-    if($_SERVER ['REQUEST_METHOD'] != "POST") {
-        exit ("POST request method required");
+if (empty($_FILES) || !isset($_FILES['fileToUpload'])) {
+    http_response_code(400);
+    exit('No file was uploaded. Use key=fileToUpload in form-data');
+}
+
+$uploadDir = __DIR__ . '/uploads/';
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
+}
+
+$fileInfo = $_FILES['fileToUpload'];
+$targetFile = $uploadDir . basename($fileInfo['name']);
+$imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+$maxSize = 5 * 1024 * 1024; // 5 MB
+$allowed = ['jpg','jpeg','png','gif'];
+$errors = [];
+
+if (file_exists($targetFile)) {
+    $errors[] = 'File already exists.';
+}
+
+if ($fileInfo['size'] > $maxSize) {
+    $errors[] = 'File is too large. Max 5MB.';
+}
+
+
+if (!in_array($imageFileType, $allowed, true)) {
+    $errors[] = 'Invalid file type. Only JPG, JPEG, PNG & GIF allowed.';
+}
+
+
+if (!empty($errors)) {
+    http_response_code(400);
+    foreach ($errors as $e) {
+        echo $e . "\n";
     }
+    exit;
+}
 
-    // Check if file already exists
-    if (file_exists($target_file)) {
-        echo "Sorry, file already exists.";
-        $uploadOk = 0;
-        }
-    
-        // Check file size
-        if ($_FILES["fileToUpload"]["size"] > 500000) {
-        echo "Sorry, your file is too large.";
-        $uploadOk = 0;
-        }
-    
-        // Allow certain file formats
-        if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-        && $imageFileType != "gif" ) {
-        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-        $uploadOk = 0;
-        }
-    
-        // Check if $uploadOk is set to 0 by an error
-        if ($uploadOk == 0) {
-        echo "Sorry, your file was not uploaded.";
-        // if everything is ok, try to upload file
-        } else {
-        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-            echo "The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.";
-        } else {
-            echo "Sorry, there was an error uploading your file.";
-        }
-        }
-    ?>
-?>
+
+if (!move_uploaded_file($fileInfo['tmp_name'], $targetFile)) {
+    http_response_code(500);
+    exit('Error moving uploaded file.');
+}
+
+
+http_response_code(200);
+echo 'Upload successful: ' . htmlspecialchars(basename($fileInfo['name']));
+
