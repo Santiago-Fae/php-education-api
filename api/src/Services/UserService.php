@@ -4,7 +4,9 @@ namespace App\Services;
 use PDO;
 use PDOException;
 use App\Models\User;
+use App\Models\Relations;
 use App\Services\AuthService;
+
 
 class UserService
 {
@@ -37,6 +39,11 @@ class UserService
     {
         $user = new User();
         $user = $user->find($id);
+        $classService = new Relations();
+        $classList = $classService->getClassesForUser($id);
+        $classCheck = array_column($classList, 'name');
+        print_r($user);
+        $user["classes"] = $classCheck;
         return $user;
     }
 

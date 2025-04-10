@@ -3,6 +3,7 @@ namespace App\Services;
 use App\Models\Classes;
 use PDO;
 use PDOException;
+use App\Models\Relations;
 class ClassService
 {
     private PDO $pdo;
@@ -47,20 +48,26 @@ public function create(string $name, string $hour, string $classroom): ?int
 
 
     public function findClassById(int $id): array|null
-    {
-        try {
-            $result = $this->class->find($id);
+{
+    try {
+        $result = $this->class->find($id);
 
-            if ($result) {
-                $this->class->populate($result);
-                return $result;
-            }
-
-            return null;
-        } catch (PDOException $e) {
-            return null;
+        if ($result) {
+            $this->class->populate($result);
+            // load relation of users
+            $relationService = new Relations();
+            $userList = $relationService->getUsersForClass($id);
+            $userNames = array_column($userList, 'name');
+            // adding the users to the classData to show
+            $result["users"] = $userNames;
+            return $result;
         }
+
+        return null;
+    } catch (PDOException $e) {
+        return null;
     }
+}
 
     public function getAll(): array
     {
@@ -131,7 +138,7 @@ public function create(string $name, string $hour, string $classroom): ?int
 
 //     if ($result) {
 //         $this->class->populate($result);
-//         return $this->class->delete(); // model with handle deletion
+//         return $this->class->delete(); // model which will handle deletion
 //     }
 
 //     return false;

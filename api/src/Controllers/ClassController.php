@@ -9,6 +9,7 @@ use App\Services\ClassService;
 use App\Controllers\AuthController;
 use App\Models\DB;
 
+
 class ClassController
 {
     protected $classService;
@@ -75,6 +76,7 @@ class ClassController
             ResponseMessage::send(401, "Error deleting class");
         }
     }
+
 }
 
 
