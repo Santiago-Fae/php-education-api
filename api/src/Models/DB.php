@@ -5,6 +5,13 @@ use PDOException;
 
 class DB {
 <<<<<<< HEAD
+    private $host = 'localhost'; 
+    private $dbName = 'education_system'; 
+    private $username = 'root'; 
+    private $password = ''; 
+    private $pdo; 
+=======
+<<<<<<< HEAD
     private $host = '127.0.0.1'; // Endereço do servidor MySQL
 private $dbName = 'education_system'; // Nome do banco de dados
 private $username = 'root'; // Usuário padrão do MySQL no AMPPS
@@ -17,25 +24,25 @@ private $password = ''; // Senha padrão do MySQL no AMPPS
     private $username = 'root';
     private $password = '';
     private $pdo;
+>>>>>>> 3befbe8f94305a65177ba8b959498970714cd6c5
 
     public function __construct() {
         $this->connect();
     }
 
-    // Method to establish a connection to the database
     private function connect() {
         try {
-            // DSN (Data Source Name) for the connection
             $dsn = "mysql:host={$this->host};dbname={$this->dbName};charset=utf8";
             $this->pdo = new PDO($dsn, $this->username, $this->password);
+<<<<<<< HEAD
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
+=======
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+>>>>>>> 3befbe8f94305a65177ba8b959498970714cd6c5
         } catch (PDOException $e) {
-            // If an error occurs, display the message
             die('Connection failed: ' . $e->getMessage());
         }
     }
-
-    // Method to return the PDO instance
     public function getConnection() {
         return $this->pdo;
     }

@@ -3,7 +3,7 @@
 
 	class ResponseMessage {
 		/**
-		 * Send a response with status and message
+		 * response with status
 		 */
 		public static function send($status, $message) {
 			header('Content-Type: application/json');

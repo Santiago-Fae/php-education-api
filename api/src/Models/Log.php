@@ -11,10 +11,10 @@ class Log
 
     public function __construct()
     {
-        // Initialize PDO connection
+        // pdo db connection
         $this->db = new DB();
         $this->pdo = $this->db->getConnection();
-        $this->verifyOrCreateTable(); // Ensure the logs table exists
+        $this->verifyOrCreateTable(); // log table
     }
 
     public function saveLog($request = null, $message, $isError = 0)

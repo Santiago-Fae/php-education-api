@@ -38,7 +38,6 @@ class UserController
 
     public function getUser(Request $request)
     {
-        // Logic to get a user by ID
         $data = RequestBody::getBody($request);
         $user = $this->userService->findUserById($data["id"]);
         ResponseHelper::success($user);
@@ -51,7 +50,6 @@ class UserController
         if ($authController->getUser() !== 'admin') {
             ResponseMessage::send(403, "Permission denied");
         }
-        // Captura o corpo da requisição como uma string
         $data = RequestBody::getBody($request);
         if ($this->userService->updateUser($data)) {
             ResponseMessage::send(200, "Updated user successfully");
